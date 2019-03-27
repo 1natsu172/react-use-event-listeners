@@ -1740,6 +1740,11 @@ detect-newline@^2.1.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
   integrity sha1-9B8cEL5LAOh7XxPaaAdZ8sW/0+I=
 
+detect-passive-events@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/detect-passive-events/-/detect-passive-events-1.0.4.tgz#6ed477e6e5bceb79079735dcd357789d37f9a91a"
+  integrity sha1-btR35uW863kHlzXc01d4nTf5qRo=
+
 diff-sequences@^24.3.0:
   version "24.3.0"
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-24.3.0.tgz#0f20e8a1df1abddaf4d9c226680952e64118b975"
@@ -5448,6 +5453,13 @@ regexpu-core@^4.5.4:
     regjsparser "^0.6.0"
     unicode-match-property-ecmascript "^1.0.4"
     unicode-match-property-value-ecmascript "^1.1.0"
+
+register-event-listeners@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/register-event-listeners/-/register-event-listeners-2.0.0.tgz#848c872892a5cec9d3169e0c63c1076d37762e30"
+  integrity sha512-EfN3SmqHBqinP+eg042m/4q5F4BYQ5HbxCxHkVPVqq0iaMIkSl5ESmKBraUHW8GSxT6rlZxY4eAj+4VDUufz/w==
+  dependencies:
+    detect-passive-events "^1.0.4"
 
 regjsgen@^0.2.0:
   version "0.2.0"

@@ -73,5 +73,8 @@
     "removeEventListener",
     "React",
     "hooks"
-  ]
+  ],
+  "dependencies": {
+    "register-event-listeners": "^2.0.0"
+  }
 }
