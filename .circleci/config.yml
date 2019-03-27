@@ -1,0 +1,86 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.4
+references:
+  <<: &working_directory
+    working_directory: ~/react-use-event-listeners
+
+
+commands:
+  test:
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: Install dependencies
+          command: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: test
+          command: yarn test --coverage
+      - codecov/upload:
+          file: coverage/*.json
+  test-node-v9:
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: Install dependencies
+          command: yarn install --ignore-engines
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: test
+          command: yarn test --coverage
+      - codecov/upload:
+          file: coverage/*.json
+
+jobs:
+  node-v9:
+    <<: *working_directory
+    docker:
+      - image: circleci/node:9
+    steps:
+      - test-node-v9
+  node-v10:
+    <<: *working_directory
+    docker:
+      - image: circleci/node:10
+    steps:
+      - test
+  node-v11:
+    <<: *working_directory
+    docker:
+      - image: circleci/node:11
+    steps:
+      - test
+
+workflows:
+  node-multi-build:
+    jobs:
+      - node-v9
+      - node-v10
+      - node-v11
