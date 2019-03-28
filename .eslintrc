@@ -37,6 +37,9 @@
      */
     "import/export": "off",
     "import/prefer-default-export": "off", // Allow single Named-export
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": ["**/*.test.{js,jsx,ts,tsx}", "**/*.spec.{js,jsx,ts,tsx}"]
+    }],
     // "no-unused-expressions": ["warn", {
     // "allowShortCircuit": true,
     // "allowTernary": true
