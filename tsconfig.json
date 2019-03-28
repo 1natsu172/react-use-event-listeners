@@ -6,6 +6,8 @@
     "lib": ["es6", "es7", "dom"],
     "outDir": "./dist",
     "moduleResolution": "node",
+    "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */ ,
+    "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */ ,
     "sourceMap": true,
     "strict": true,
     "noImplicitReturns": true,
