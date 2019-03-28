@@ -1,43 +1,28 @@
+import { useEffect, DependencyList } from 'react'
 import {
-  pickEventType,
-  pickHandler,
-  pickListenerOption,
-  detectListenerOption,
-  captureOption,
-  checkArgs
-} from './libs'
+  registerEventListeners,
+  EventType,
+  EventListeners
+} from 'register-event-listeners'
 
-import { EventType, EventListeners } from './types/EventListeners'
+type Values<U extends EventType> = {
+  eventTarget?: EventTarget | null
+  listeners: EventListeners<U>
+}
 
-export const useEventListeners = <K extends EventType>(
-  eventTarget: EventTarget,
-  eventListeners: EventListeners<K>
+export const useEventListeners = <U extends EventType>(
+  { eventTarget, listeners }: Values<U>,
+  deps?: DependencyList
 ) => {
-  checkArgs(eventListeners)
-
-  const register = () =>
-    eventListeners.forEach(eventListener => {
-      const eventType = pickEventType(eventListener)
-      const handler = pickHandler(eventListener)
-      const pickedOption = pickListenerOption(eventListener)
-      const listenerOption = detectListenerOption(pickedOption)
-
-      eventTarget.addEventListener(eventType, handler, listenerOption)
-    })
-
-  const unRegister = () =>
-    eventListeners.forEach(eventListener => {
-      const eventType = pickEventType(eventListener)
-      const handler = pickHandler(eventListener)
-      const pickedOption = pickListenerOption(eventListener)
-      const listenerOption = captureOption(pickedOption)
-
-      eventTarget.removeEventListener(
-        eventType,
-        handler,
-        listenerOption // c.f https://developer.mozilla.org/ja/docs/Web/API/EventTarget/removeEventListener
+  useEffect(() => {
+    if (eventTarget) {
+      const { register, unRegister } = registerEventListeners(
+        eventTarget,
+        listeners
       )
-    })
-
-  return { register, unRegister }
+      register()
+      return unRegister
+    }
+    return undefined
+  }, deps)
 }
