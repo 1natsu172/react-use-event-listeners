@@ -1,30 +1,58 @@
-import React, { useCallback, useState, useRef, FC } from 'react'
+import React, { useCallback, useState, useRef, FC, useEffect } from 'react'
 import { fireEvent, render, cleanup } from 'react-testing-library'
 import { useEventListeners } from './useEventListeners'
 
 const TestComponent: FC = () => {
   const [count, setCount] = useState(0)
+  const [eventTarget, setEventTarget] = useState<HTMLDivElement | null>(null)
 
-  const eventTargetRef = useRef<HTMLDivElement>(null)
+  const eventTargetEl1 = useRef<HTMLDivElement>(null)
+  const eventTargetEl2 = useRef<HTMLDivElement>(null)
 
   const countUp = useCallback(() => {
     setCount(prev => prev + 1)
   }, [])
 
+  const toggleEventTarget = useCallback(() => {
+    setEventTarget(prevTarget =>
+      prevTarget === eventTargetEl1.current
+        ? eventTargetEl2.current
+        : eventTargetEl1.current
+    )
+  }, [eventTarget])
+
+  // initializing Ref EventTarget
+  useEffect(() => {
+    setEventTarget(eventTargetEl1.current)
+  }, [])
+
   useEventListeners(
     {
-      eventTarget: eventTargetRef.current,
+      eventTarget,
       listeners: [['click', countUp]]
     },
-    [eventTargetRef.current]
+    [eventTarget]
   )
 
   return (
     <>
       <div data-testid="displayCountEl">{count}</div>
-      <div data-testid="eventTargetEl" ref={eventTargetRef}>
-        Click then count up
+      <div data-testid="displayEnableEventTarget">
+        {eventTarget ? eventTarget.dataset.testid : null}
       </div>
+      <div data-testid="eventTargetEl1" ref={eventTargetEl1}>
+        eventTargetEl1: Click then count up
+      </div>
+      <div data-testid="eventTargetEl2" ref={eventTargetEl2}>
+        eventTargetEl2: Click then count up
+      </div>
+      <button
+        data-testid="toggleEventTargetButton"
+        onClick={toggleEventTarget}
+        type="button"
+      >
+        Change EventTarget
+      </button>
     </>
   )
 }
@@ -32,23 +60,23 @@ const TestComponent: FC = () => {
 afterEach(cleanup)
 
 test('Should be properly processed the same as useEffect hooks', () => {
-  const { rerender, unmount, getByTestId } = render(<TestComponent />)
+  const { unmount, getByTestId } = render(<TestComponent />)
   const displayCountEl = getByTestId('displayCountEl')
-  const eventTargetEl = getByTestId('eventTargetEl')
+  const eventTargetEl = getByTestId('eventTargetEl1')
 
+  for (let index = 0; index < 5; index += 1) {
   fireEvent.click(eventTargetEl)
+  }
+  expect(displayCountEl.textContent).toBe('5')
 
-  expect(displayCountEl.textContent).toBe('0')
+  unmount()
 
-  /**
-   * Force execute useEffect().
-   * The method for activating effects after render has not been established yet……need some hack for `act()` or something.
-   * Related Issue: https://github.com/kentcdodds/react-testing-library/issues/215
-   * So here we use `rerender` to force useEffect.
-   */
-  rerender(<TestComponent />)
-
+  // Should not work on El1(expect cleanuped)
+  for (let index = 0; index < 5; index += 1) {
   fireEvent.click(eventTargetEl)
+  }
+  expect(displayCountEl.textContent).toBe('5')
+})
 
   expect(displayCountEl.textContent).toBe('1')
 
