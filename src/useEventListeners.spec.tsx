@@ -65,7 +65,7 @@ test('Should be properly processed the same as useEffect hooks', () => {
   const eventTargetEl = getByTestId('eventTargetEl1')
 
   for (let index = 0; index < 5; index += 1) {
-  fireEvent.click(eventTargetEl)
+    fireEvent.click(eventTargetEl)
   }
   expect(displayCountEl.textContent).toBe('5')
 
@@ -73,24 +73,62 @@ test('Should be properly processed the same as useEffect hooks', () => {
 
   // Should not work on El1(expect cleanuped)
   for (let index = 0; index < 5; index += 1) {
-  fireEvent.click(eventTargetEl)
+    fireEvent.click(eventTargetEl)
   }
   expect(displayCountEl.textContent).toBe('5')
 })
 
-  expect(displayCountEl.textContent).toBe('1')
+test('Should work properly DependencyList(2nd argument array)', () => {
+  const { getByTestId } = render(<TestComponent />)
+  const displayCountEl = getByTestId('displayCountEl')
+  const displayEnableEventTarget = getByTestId('displayEnableEventTarget')
+  const eventTargetEl1 = getByTestId('eventTargetEl1')
+  const eventTargetEl2 = getByTestId('eventTargetEl2')
+  const toggleEventTargetButton = getByTestId('toggleEventTargetButton')
 
+  expect(displayEnableEventTarget.textContent).toBe(
+    eventTargetEl1.dataset.testid
+  )
+
+  // should work event listener on El1
   for (let index = 0; index < 5; index += 1) {
-    fireEvent.click(eventTargetEl)
+    fireEvent.click(eventTargetEl1)
   }
+  expect(displayCountEl.textContent).toBe('5')
 
-  expect(displayCountEl.textContent).toBe('6')
+  // should not work on El2(expect cleanuped)
+  fireEvent.click(eventTargetEl2)
+  expect(displayCountEl.textContent).toBe('5')
 
-  unmount()
+  // Change target to El2
+  fireEvent.click(toggleEventTargetButton)
+  expect(displayEnableEventTarget.textContent).toBe(
+    eventTargetEl2.dataset.testid
+  )
 
+  // Should not work on El1(expect cleanuped)
+  fireEvent.click(eventTargetEl1)
+  expect(displayCountEl.textContent).toBe('5')
+
+  // should work event listener on El2
   for (let index = 0; index < 5; index += 1) {
-    fireEvent.click(eventTargetEl)
+    fireEvent.click(eventTargetEl2)
   }
+  expect(displayCountEl.textContent).toBe('10')
 
-  expect(displayCountEl.textContent).toBe('6')
+  // Re-Change target to El1
+  fireEvent.click(toggleEventTargetButton)
+  expect(displayEnableEventTarget.textContent).toBe(
+    eventTargetEl1.dataset.testid
+  )
+
+  // should not work on El2(expect cleanuped)
+  fireEvent.click(eventTargetEl2)
+  expect(displayCountEl.textContent).toBe('10')
+
+  // should work event listener on El1
+  for (let index = 0; index < 5; index += 1) {
+    fireEvent.click(eventTargetEl1)
+  }
+  expect(displayCountEl.textContent).toBe('15')
 })
