@@ -2,7 +2,7 @@ import React, { useCallback, useState, useRef, FC } from 'react'
 import { fireEvent, render, cleanup } from 'react-testing-library'
 import { useEventListeners } from './useEventListeners'
 
-const MockComponent: FC = () => {
+const TestComponent: FC = () => {
   const [count, setCount] = useState(0)
 
   const eventTargetRef = useRef<HTMLDivElement>(null)
@@ -31,35 +31,38 @@ const MockComponent: FC = () => {
 
 afterEach(cleanup)
 
-test('testing', () => {
-  const { rerender, unmount, getByTestId } = render(<MockComponent />)
+test('Should be properly processed the same as useEffect hooks', () => {
+  const { rerender, unmount, getByTestId } = render(<TestComponent />)
   const displayCountEl = getByTestId('displayCountEl')
   const eventTargetEl = getByTestId('eventTargetEl')
-  rerender(<MockComponent />)
+
+  fireEvent.click(eventTargetEl)
+
+  expect(displayCountEl.textContent).toBe('0')
+
+  /**
+   * Force execute useEffect().
+   * The method for activating effects after render has not been established yet……need some hack for `act()` or something.
+   * Related Issue: https://github.com/kentcdodds/react-testing-library/issues/215
+   * So here we use `rerender` to force useEffect.
+   */
+  rerender(<TestComponent />)
 
   fireEvent.click(eventTargetEl)
 
   expect(displayCountEl.textContent).toBe('1')
 
-  fireEvent.click(eventTargetEl)
+  for (let index = 0; index < 5; index += 1) {
+    fireEvent.click(eventTargetEl)
+  }
 
-  expect(displayCountEl.textContent).toBe('2')
-
-  fireEvent.click(eventTargetEl)
-  fireEvent.click(eventTargetEl)
-
-  expect(displayCountEl.textContent).toBe('4')
+  expect(displayCountEl.textContent).toBe('6')
 
   unmount()
 
-  fireEvent.click(eventTargetEl)
+  for (let index = 0; index < 5; index += 1) {
+    fireEvent.click(eventTargetEl)
+  }
 
-  expect(displayCountEl.textContent).toBe('4')
-
-  fireEvent.click(eventTargetEl)
-  fireEvent.click(eventTargetEl)
-  fireEvent.click(eventTargetEl)
-  fireEvent.click(eventTargetEl)
-
-  expect(displayCountEl.textContent).toBe('4')
+  expect(displayCountEl.textContent).toBe('6')
 })
