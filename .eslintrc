@@ -10,7 +10,7 @@
   },
   "plugins": ["@typescript-eslint", "jest", "prettier"],
   "extends": [
-    "airbnb-base",
+    "airbnb",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
     "plugin:jest/recommended",
@@ -37,6 +37,9 @@
      */
     "import/export": "off",
     "import/prefer-default-export": "off", // Allow single Named-export
+    /**
+     * Allow to import deps from devDependencies into testing files
+     */
     "import/no-extraneous-dependencies": ["error", {
       "devDependencies": ["**/*.test.{js,jsx,ts,tsx}", "**/*.spec.{js,jsx,ts,tsx}"]
     }],
@@ -45,6 +48,13 @@
     // "allowTernary": true
     // }], // https://eslint.org/docs/rules/no-unused-expressions
     // "no-nested-ternary": "off", // Allow nested ternary
+
+    /**
+     * @description rules of eslint-plugin-react
+     */
+    "react/jsx-filename-extension": ["warn", {
+      "extensions": [".jsx", ".tsx"]
+    }], // also want to use with ".tsx"
 
     /**
      * @description rules of @typescript-eslint
