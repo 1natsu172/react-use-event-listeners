@@ -1,6 +1,6 @@
 {
   "name": "react-use-event-listeners",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Handling the addEventListener(s) using the hooks.",
   "publishConfig": {
     "access": "public"
