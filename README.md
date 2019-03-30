@@ -10,7 +10,7 @@
 Useful for listening to events that are not synthetic-events.
 
 ---
-_This hook is for 1-EventTarget:multi event listeners, so not for multi-targets:multi event listeners._
+_This hook is **for one-EventTarget with multi event listeners**, so not for multi-EventTargets with multi event listeners._
 
 ## ✨ Getting Started
 
@@ -33,6 +33,8 @@ npm install react-use-event-listeners
 example component is count-up button app
 
 ```javascript
+import { useEventListeners } from 'react-use-event-listeners'
+
 const CountUpApp = () => {
   const eventTargetRef = useRef(null)
   
