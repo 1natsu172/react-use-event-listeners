@@ -1,7 +1,7 @@
 {
   "name": "react-use-event-listeners",
   "version": "1.0.0",
-  "description": "React hooks version of register-event-listeners",
+  "description": "Handling the addEventListener(s) using the hooks.",
   "publishConfig": {
     "access": "public"
   },
@@ -77,8 +77,9 @@
     "EventTarget",
     "addEventListener",
     "removeEventListener",
-    "React",
-    "hooks"
+    "hooks",
+    "React-hooks",
+    "custom-hooks"
   ],
   "dependencies": {
     "register-event-listeners": "^2.0.0"

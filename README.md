@@ -30,52 +30,77 @@ npm install react-use-event-listeners
 
 ## 💁 Usage
 
+example component is count-up button app
+
 ```javascript
+const CountUpApp = () => {
+  const eventTargetRef = useRef(null)
+  
+  const countUp = useCallback(() => {
+    setCount(prev => prev + 1)
+  }, [])
+
+  const handleOver = useCallback(() => {
+    console.log('user will click count-up button')
+  }, [])
+
+  useEventListeners(
+    {
+      eventTarget: eventTargetRef.current,
+      listeners: [
+        ['click', countUp],
+        ['pointerover', handleOver],
+      ]
+    },
+    [eventTargetRef.current]
+  )
+
+  return (
+    <>
+      <div className="displayCount">{count}</div>
+      <div className="countUpButton" ref={eventTargetRef}>
+        Click then count up
+      </div>
+    </>
+  )
+}
 ```
 
 ## 🔥 APIs
 
-### `useEventListeners(element, listeners)`
+### `useEventListeners(values, dependencyList)`
 
-| name        | require |                                                    type                                                    | default | decstiption                                                                                             |
-| ----------- | :-----: | :--------------------------------------------------------------------------------------------------------: | :-----: | ------------------------------------------------------------------------------------------------------- |
-| eventTarget |    ✓    |                                                EventTarget                                                 |    -    | [MDN - EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)                       |
-| listeners   |    ✓    | Array([EventListeners](https://1natsu172.github.io/react-use-event-listeners/globals.html#eventlisteners)) |    -    | [MDN - addEventListener](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) |
+| name           | require |  type  | default | decstiption                                                                                                                                       |
+| -------------- | :-----: | :----: | :-----: | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| values         |    ✓    | Object |    -    | See below                                                                                                                                         |
+| dependencyList |    -    | Array  |    -    | [About React hooks 2nd argument array(DependencyList)](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) |
 
-#### About the 2nd argument(listeners)
+#### About the 1st argument object(values)
 
+| name        | require |    type     | default | decstiption                                                                                                         |
+| ----------- | :-----: | :---------: | :-----: | ------------------------------------------------------------------------------------------------------------------- |
+| eventTarget |    -    | EventTarget |    -    | [MDN - EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)                                   |
+| listeners   |    ✓    |    Array    |    -    | [README - register-event-listeners](https://github.com/1natsu172/register-event-listeners#the-element-of-the-array) |
 
-##### The element of the array
+##### What's listeners?
 
-**Element is same as the format of the argument of [`addEventListener`](https://developer.mozilla.org/ja/docs/Web/API/EventTarget/addEventListener)**
+The listeners are the same format as dependency module [register-event-listeners](https://github.com/1natsu172/register-event-listeners). Please refer to that document for details.
 
-That is this 👉 `[type, listener[, options])]`
+> https://github.com/1natsu172/register-event-listeners#the-element-of-the-array
 
-* `type` is **[event.type](https://developer.mozilla.org/ja/docs/Web/API/Event/type).**
-* `listener` is commonly called a **handler**
-* `options` is listenerOptions
-
-##### The 2nd argument should be like this.
+##### So, the 1st argument should be like this.
 
 ```javascript
-[
-  ['touchstart', onTouchStart, {capture: true, once: true}],
-  ['touchmove', onTouchMove, { passive: false }],
-  ['touchend', onEnd],
-  ['touchcancel', onEnd]
-]
+{
+  eventTarget: eventTargetRef.current,
+  listeners:[
+    ['touchstart', onTouchStart, {capture: true, once: true}],
+    ['touchmove', onTouchMove, { passive: false }],
+    ['touchend', onEnd],
+    ['touchcancel', onEnd]
+  ]
+}
 ```
-
-#### Returns
-
-##### register
-
-register event listeners. In other words _addEventListener**s**_.
-
-##### unRegister
-
-unRegister event listeners. In other words _removeEventListener**s**_.
-
 
 ## 💚 Running the tests
 
