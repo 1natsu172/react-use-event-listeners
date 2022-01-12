@@ -34,53 +34,31 @@ commands:
           command: yarn test --coverage
       - codecov/upload:
           file: coverage/*.json
-  test-node-v9:
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-
-      - run:
-          name: Install dependencies
-          command: yarn install --ignore-engines
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      - run:
-          name: test
-          command: yarn test --coverage
-      - codecov/upload:
-          file: coverage/*.json
 
 jobs:
-  node-v9:
+  node-lts:
     <<: *working_directory
     docker:
-      - image: circleci/node:9
-    steps:
-      - test-node-v9
-  node-v10:
-    <<: *working_directory
-    docker:
-      - image: circleci/node:10
+      - image:  cimg/node:lts
     steps:
       - test
-  node-v11:
+  node-v16:
     <<: *working_directory
     docker:
-      - image: circleci/node:11
+      - image:  cimg/node:16.13
+    steps:
+      - test
+  node-v14:
+    <<: *working_directory
+    docker:
+      - image:  cimg/node:14.18
     steps:
       - test
 
 workflows:
   node-multi-build:
     jobs:
-      - node-v9
-      - node-v10
-      - node-v11
+      - node-lts
+      - node-v16
+      - node-v14
+
